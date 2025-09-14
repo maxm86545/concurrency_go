@@ -1,0 +1,55 @@
+version: '3'
+
+silent: true
+
+vars:
+  GO_MODULE: github.com/maxm86545/concurrency_go
+  GO_FILES:
+    sh: find . -type f -name '*.go' -not -path "./vendor/*" | tr "\n" " "
+  GOBIN:
+    sh: echo $(go env GOPATH)/bin
+
+tasks:
+  default:
+    cmds:
+      - task: fmt
+      - task: lint
+      - task: tests
+      - task: build
+
+  build:
+    cmds:
+      - echo "- Build"
+      - go build ./cmd/server
+
+  fmt:
+    - echo "- Format"
+    - go run mvdan.cc/gofumpt@v0.9.1 -w {{.GO_FILES}}
+    - go run github.com/daixiang0/gci@v0.13.7 write -s standard -s default -s "prefix({{.GO_MODULE}})" {{.GO_FILES}}
+
+  lint:
+    cmds:
+      - echo "- Lint"
+      - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.4.0 run --fix --timeout=5m ./...
+
+  tests:
+    cmds:
+      - echo "- Tests"
+      - go test -race ./...
+
+  tests:fuzz:
+    cmds:
+      - echo "- Fuzz tests"
+      - |
+        find . -name '*_test.go' | while read -r file; do
+          dir=$(dirname "$file")
+          grep -Eo 'func (Fuzz[A-Za-z0-9_]+)' "$file" | awk '{print $2}' | sort -u | while read -r fuzz; do
+            echo "-- Fuzzing $fuzz in $dir"
+            go test -run=^$ -fuzz="^$fuzz$" -fuzztime=15s "$dir"
+          done
+        done
+
+  tests:mutation:
+    cmds:
+      - echo "- Mutation tests"
+      - go run github.com/go-gremlins/gremlins/cmd/gremlins@v0.5.1 unleash --workers=8 --timeout-coefficient=15

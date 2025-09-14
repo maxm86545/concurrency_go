@@ -1,0 +1,253 @@
+version: '2'
+
+run:
+  tests: true
+
+linters:
+  default: none
+  enable:
+    - asasalint      # Detects pass []any as any in variadic func(...any).
+    - asciicheck     # Finds non-ASCII identifiers.
+    - bidichk        # Detects dangerous unicode character sequences.
+    - bodyclose      # Ensures HTTP response body is closed successfully.
+    - canonicalheader # Verifies net/http.Header uses canonical header.
+    - containedctx   # Finds struct containing context.Context field.
+    - contextcheck   # Ensures function uses inherited context.
+    - copyloopvar    # Detects places where loop variables are copied.
+    - decorder       # Validates declaration order of types, constants, variables and functions.
+    - depguard       # Restricts package imports to acceptable packages.
+    - dogsled        # Finds assignments with too many blank identifiers.
+    - dupl           # Detects duplicate code.
+    - dupword        # Finds duplicate words in source code.
+    - durationcheck  # Catches two durations multiplied together.
+    - embeddedstructfieldcheck # Validates proper field order in embedded structs.
+    - errcheck       # Finds unchecked errors.
+    - exhaustive     # Ensures exhaustiveness of enum switch statements.
+    - errname        # Validates that sentinel errors are prefixed with Err.
+    - forbidigo      # Forbids specific identifiers.
+    - funcorder      # Validates function, method, and constructor order.
+    - ginkgolinter   # Enforces ginkgo and gomega standards.
+    - gocheckcompilerdirectives # Validates go compiler directive comments.
+    - gocognit       # Measures cognitive complexity of functions.
+    - goconst        # Finds repeated strings that could be replaced by constants.
+    - gocritic       # Detects bugs, performance and style issues.
+    - gocyclo        # Measures cyclomatic complexity of functions.
+    - godot          # Ensures comments end in a period.
+    - godox          # Finds FIX ME, TO DO and other comment keywords.
+    - goheader       # Validates file header matches pattern.
+    - gomoddirectives # Validates go.mod directives.
+    - gomodguard     # Controls allowed/blocked go modules.
+    - goprintffuncname # Ensures printf-like functions are named with f at the end.
+    - gosec          # Detects security problems.
+    - govet          # Analyzes Go source code and reports suspicious constructs.
+    - grouper        # Validates expression groups.
+    - iface          # Detects incorrect use of interfaces.
+    - importas       # Enforces consistent import aliases.
+    - inamedparam    # Finds unnamed method parameters in interfaces.
+    - interfacebloat # Limits the number of methods inside an interface.
+    - intrange       # Suggests using integer range loops where possible.
+    - ineffassign    # Finds assignments to existing variables that are not used.
+    - loggercheck    # Validates key value pairs for common logger libraries.
+    - maintidx       # Measures maintainability index of each function.
+    - lll            # Enforces line length limits.
+    - makezero       # Finds slice declarations with non-zero initial length.
+    - mirror         # Detects wrong mirror patterns of bytes/strings usage.
+    - misspell       # Finds commonly misspelled English words.
+    - musttag        # Validates field tags in marshaled structs.
+    - nakedret       # Finds naked returns in functions longer than specified size.
+    - nestif         # Detects deeply nested if statements.
+    - nilerr         # Finds code that returns nil even if error is not nil.
+    - nilnesserr     # Detects constructs that return nil error but invalid value.
+    - nilnil         # Finds simultaneous return of nil error and nil value.
+    - noctx          # Detects functions with missing context.Context usage.
+    - nolintlint     # Validates ill-formed or insufficient nolint directives.
+    - nosprintfhostport # Prevents misuse of Sprintf to construct host with port.
+    - perfsprint     # Suggests faster alternatives to fmt.Sprintf.
+    - prealloc       # Finds slice declarations that could be pre-allocated.
+    - predeclared    # Detects code that shadows predeclared identifiers.
+    - promlinter     # Validates Prometheus metrics naming.
+    - reassign       # Prevents package variables reassignment.
+    - recvcheck      # Ensures receiver type consistency.
+    - revive         # Drop-in replacement of golint.
+    - rowserrcheck   # Ensures Rows.Err of rows is checked.
+    - sloglint       # Enforces consistent code style when using log/slog.
+    - spancheck      # Detects mistakes with OpenTelemetry/Census spans.
+    - sqlclosecheck  # Ensures sql.Rows, sql.Stmt, etc. are closed.
+    - staticcheck    # Detects bugs, performance and style issues.
+    - tagliatelle    # Validates struct tags.
+    - testableexamples # Ensures examples are testable.
+    - testifylint    # Validates usage of github.com/stretchr/testify.
+    - testpackage    # Enforces use of separate _test package.
+    - thelper        # Validates test helpers start with t.Helper().
+    - tparallel      # Prevents inappropriate usage of t.Parallel().
+    - unconvert      # Finds unnecessary type conversions.
+    - unparam        # Finds unused function parameters.
+    - unused         # Finds unused constants, variables, functions and types.
+    - usestdlibvars  # Suggests using variables/constants from stdlib.
+    - usetesting     # Finds uses of functions with replacement inside testing package.
+    - wastedassign   # Detects wasted assignment statements.
+    - whitespace     # Removes unnecessary newlines at the start and end of functions.
+
+  settings:
+    depguard:
+      rules:
+        main:
+          deny:
+            - pkg: github.com/pkg/errors
+              desc: Should be replaced by standard lib errors package
+
+    dupl:
+      threshold: 115
+
+    exhaustive:
+      default-signifies-exhaustive: true
+
+    forbidigo:
+      forbid:
+        - pattern: ^(fmt\.Print(|f|ln)|print|println)$
+        - pattern: errors\.Wrap
+        - pattern: errors\.Cause
+        - pattern: (dql|DQL)
+
+    gocognit:
+      min-complexity: 35
+
+    gocritic:
+      enable-all: true
+      disabled-checks:
+        - hugeParam
+        - paramTypeCombine
+        - stringConcatSimplify
+        - unnecessaryBlock
+        - whyNoLint
+        - yodaStyleExpr
+
+    godox:
+      keywords:
+        - FIXME
+        - TODO
+
+    gomodguard:
+      blocked:
+        versions: []
+
+    govet:
+      disable:
+        - fieldalignment
+        - shadow
+      enable-all: true
+
+    lll:
+      line-length: 130
+
+    maintidx:
+      under: 30
+
+    nolintlint:
+      require-explanation: true
+      allow-no-explanation: [ lll ]
+      require-specific: true
+
+    revive:
+      severity: error
+      rules:
+        - name: argument-limit
+        - name: atomic
+        - name: bare-return
+        - name: blank-imports
+        - name: bool-literal-in-expr
+        - name: comment-spacings
+        - name: confusing-results
+        - name: context-as-argument
+          arguments:
+            - allowTypesBefore: '*testing.T'
+        - name: context-keys-type
+        - name: datarace
+        - name: deep-exit
+        - name: defer
+        - name: dot-imports
+        - name: duplicated-imports
+        - name: early-return
+        - name: empty-lines
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: identical-branches
+        - name: if-return
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: package-comments
+        - name: range
+        - name: range-val-address
+        - name: range-val-in-closure
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: string-of-int
+        - name: superfluous-else
+        - name: time-equal
+        - name: time-naming
+        - name: unexported-return
+        - name: unhandled-error
+          arguments:
+            - fmt.Fprint
+            - fmt.Printf
+            - fmt.Println
+        - name: unreachable-code
+        - name: use-any
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+        - name: waitgroup-by-value
+
+    tagliatelle:
+      case:
+        rules:
+          json: camel
+          toml: snake
+        use-field-name: false
+
+
+  exclusions:
+    generated: lax
+    paths: # https://golangci-lint.run/product/migration-guide/#issuesexclude-dirs-use-default
+      - third_party$
+      - builtin$
+      - examples$
+
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+
+    rules:
+      - path: _test\.go
+        linters: [ dupl, maintidx, gocritic ]
+
+
+issues:
+  max-same-issues: 0
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+
+  exclusions:
+    generated: lax
+    paths: # https://golangci-lint.run/product/migration-guide/#issuesexclude-dirs-use-default
+      - third_party$
+      - builtin$
+      - examples$
