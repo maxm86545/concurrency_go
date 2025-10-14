@@ -31,31 +31,47 @@ func (c *Compute) Parse(query []byte) (Query, error) {
 
 	switch {
 	case bytes.Equal(upperCommand, upperCommandSet):
-		if l := len(fields); l != 3 {
-			return nil, fmt.Errorf("%w: set expects 3 arguments, got %d", ErrInvalidArguments, l)
+		const (
+			argsLen    = 3
+			keyIndex   = 1
+			valueIndex = 2
+		)
+
+		if l := len(fields); l != argsLen {
+			return nil, fmt.Errorf("%w: set expects %d arguments, got %d", ErrInvalidArguments, argsLen, l)
 		}
 
 		return &SetQuery{
-			Key:   fields[1],
-			Value: fields[2],
+			Key:   fields[keyIndex],
+			Value: fields[valueIndex],
 		}, nil
 
 	case bytes.Equal(upperCommand, upperCommandGet):
-		if l := len(fields); l != 2 {
-			return nil, fmt.Errorf("%w: get expects 2 arguments, got %d", ErrInvalidArguments, l)
+		const (
+			argsLen  = 2
+			keyIndex = 1
+		)
+
+		if l := len(fields); l != argsLen {
+			return nil, fmt.Errorf("%w: get expects %d arguments, got %d", ErrInvalidArguments, argsLen, l)
 		}
 
 		return &GetQuery{
-			Key: fields[1],
+			Key: fields[keyIndex],
 		}, nil
 
 	case bytes.Equal(upperCommand, upperCommandDel):
-		if l := len(fields); l != 2 {
-			return nil, fmt.Errorf("%w: del expects 2 arguments, got %d", ErrInvalidArguments, l)
+		const (
+			argsLen  = 2
+			keyIndex = 1
+		)
+
+		if l := len(fields); l != argsLen {
+			return nil, fmt.Errorf("%w: del expects %d arguments, got %d", ErrInvalidArguments, argsLen, l)
 		}
 
 		return &DelQuery{
-			Key: fields[1],
+			Key: fields[keyIndex],
 		}, nil
 
 	default:
