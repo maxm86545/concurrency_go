@@ -1,0 +1,6 @@
+.DS_Store
+/.idea
+/.git
+/.env
+/server
+/app.log
